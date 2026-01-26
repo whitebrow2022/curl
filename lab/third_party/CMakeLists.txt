@@ -1,0 +1,18 @@
+project(lab_third_party)
+
+set(CURL_USE_LIBPSL OFF)
+set(BUILD_TESTING OFF)
+set(BUILD_EXAMPLES OFF)
+set(CURL_DISABLE_INSTALL ON)
+set(BUILD_SHARED_LIBS OFF)
+set(BUILD_STATIC_LIBS ON)
+set(BUILD_STATIC_CURL ON)
+set(PERL_EXECUTABLE OFF)
+set(CURL_USE_SCHANNEL ON)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../.. curl_wrapper)
+
+set_target_properties(curl PROPERTIES FOLDER "third_party/curl")
+set_target_properties(curlinfo PROPERTIES FOLDER "third_party/curl")
+set_target_properties(curltool PROPERTIES FOLDER "third_party/curl")
+set_target_properties(libcurl_object PROPERTIES FOLDER "third_party/curl")
+set_target_properties(libcurl_static PROPERTIES FOLDER "third_party/curl")
