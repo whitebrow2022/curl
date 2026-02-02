@@ -11,6 +11,13 @@ source_group(TREE ${APP_SRC_DIR} PREFIX "src" FILES ${APP_SOURCES})
 add_executable(${PROJECT_NAME} ${APP_SOURCES})
 
 target_link_libraries(${PROJECT_NAME} PRIVATE libcurl_static)
+target_link_libraries(${PROJECT_NAME} PRIVATE winhttp)
+
+if(CURL_USE_SCHANNEL)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE USE_SCHANNEL)
+else(CURL_USE_BORINGSSL)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE USE_BORINGSSL)
+endif()
 
 if(WIN32)
     set_target_properties(${PROJECT_NAME} PROPERTIES 

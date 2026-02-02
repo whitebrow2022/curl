@@ -706,6 +706,8 @@ cmake_dependent_option(CURL_USE_WOLFSSL "Enable wolfSSL for SSL/TLS" OFF CURL_EN
 cmake_dependent_option(CURL_USE_GNUTLS "Enable GnuTLS for SSL/TLS" OFF CURL_ENABLE_SSL OFF)
 cmake_dependent_option(CURL_USE_RUSTLS "Enable Rustls for SSL/TLS" OFF CURL_ENABLE_SSL OFF)
 
+cmake_dependent_option(CURL_USE_BORINGSSL "Enable Rustls for SSL/TLS" OFF CURL_ENABLE_SSL OFF)
+
 if(WIN32 OR
    CURL_USE_SCHANNEL OR
    CURL_USE_MBEDTLS OR
@@ -722,6 +724,7 @@ option(CURL_DISABLE_OPENSSL_AUTO_LOAD_CONFIG "Disable automatic loading of OpenS
 curl_count_true(_enabled_ssl_options_count
   CURL_USE_SCHANNEL
   CURL_USE_OPENSSL
+  CURL_USE_BORINGSSL
   CURL_USE_MBEDTLS
   CURL_USE_WOLFSSL
   CURL_USE_GNUTLS
@@ -783,6 +786,24 @@ if(_use_core_foundation_and_core_services)
     message(FATAL_ERROR "CoreServices framework not found")
   endif()
   list(APPEND CURL_LIBS "-framework CoreServices")
+endif()
+
+if(CURL_USE_BORINGSSL)
+  set(_ssl_enabled ON)
+  set(USE_OPENSSL ON)
+
+  # Depend on OpenSSL via imported targets. This allows our dependents to
+  # get our dependencies transitively.
+  list(APPEND CURL_LIBS crypto ssl)
+
+  set(_openssl "BoringSSL")
+  set(HAVE_BORINGSSL ON)
+  set(HAVE_AWSLC OFF)
+  set(HAVE_LIBRESSL OFF)
+
+  set(HAVE_DES_ECB_ENCRYPT ON)
+  set(HAVE_SSL_SET0_WBIO OFF)
+  set(HAVE_OPENSSL_SRP OFF)
 endif()
 
 if(CURL_USE_OPENSSL)
